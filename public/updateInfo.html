@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Enroll New User</title>
+        <title>Update Personal Information</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     </head>
     <body class="container">
@@ -28,23 +28,46 @@
             <div class="jumbotron col-sm-4 pull-center">
                 <form action="/enroll" method="post">
                     <div>
-                        <label>Username:</label>
-                        <input type="text" name="username"/>
+                        <label>First Name:</label>
+                        <input type="text" name="firstname"/>
                     </div>
                     <div>
-                        <label>Password:</label>
-                        <input type="password" name="password"/>
+                        <label>Last Name:</label>
+                        <input type="text" name="lastname"/>
                     </div>
                     <div>
-                        <label>Profile:</label>
-                        <select name="type"/>
-                          <option value="patient">Patient</option>
-                          <option value="doctor">Doctor</option>
-                          <option value="admin">Administrator</option>
+                        <label>Date of Birth:</label>
+                        <input type="date" name="dob"/>
+                    </div>
+                    <div>
+                        <label>Gender:</label>
+                        <select name="gender"/>
+                          <option value="female">Female</option>
+                          <option value="male">Male</option>
                         </select>
                     </div>
                     <div>
-                        <input class="btn btn-primary" type="submit" value="Sign Up"/>
+                        <label>Address 1:</label>
+                        <input type="text" name="addr1"/>
+                    </div>
+                    <div>
+                        <label>Address 2:</label>
+                        <input type="text" name="addr2"/>
+                    </div>
+                    <div>
+                        <label>City:</label>
+                        <input type="text" name="city"/>
+                    </div>
+                    <div>
+                        <label>State:</label>
+                        <input type="text" name="state"/>
+                    </div>
+                    <div>
+                        <label>Zip Code:</label>
+                        <input type="text" name="zip"/>
+                    </div>
+                    <div>
+                        <input class="btn btn-primary" type="submit" value="Update"/>
                     </div>
                 </form>
             </div>

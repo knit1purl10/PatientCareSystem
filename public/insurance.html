@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Make a Payment</title>
+        <title>Update Insurance Information</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     </head>
     <body class="container">
@@ -26,25 +26,17 @@
 
         <div class="container row">
             <div class="jumbotron col-sm-4 pull-center">
-                <form action="/makepayment" method="post">
+                <form action="/updateInsurance" method="post">
                     <div>
-                        <label>Bill ID:</label>
-                        <input type="text" name="bill_id"/>
+                        <label>Insurance Type:</label>
+                        <input type="text" name="insurance_type"/>
                     </div>
                     <div>
-                        <label>Amount:</label>
-                        <input type="text" name="amount"/>
+                        <label>Plan ID:</label>
+                        <input type="password" name="insurance_id"/>
                     </div>
                     <div>
-                        <label>Payment Method:</label>
-                        <select name="pmethod"/>
-                          <option value="credit">Credit/Debit Card</option>
-                          <option value="bank_transfer">Bank Transfer</option>
-                          <option value="venmo">Venmo</option>
-                        </select>
-                    </div>
-                    <div>
-                        <input class="btn btn-primary" type="button" value="Submit Payment"/>
+                        <input class="btn btn-primary" type="submit" value="Save"/>
                     </div>
                 </form>
             </div>

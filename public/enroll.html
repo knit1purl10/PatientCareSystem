@@ -26,7 +26,7 @@
 
         <div class="container row">
             <div class="jumbotron col-sm-4 pull-center">
-                <form action="/enroll" method="post">
+                <form action="/routes/enroll" method="post">
                     <div>
                         <label>Username:</label>
                         <input type="text" name="username"/>
@@ -38,13 +38,13 @@
                     <div>
                         <label>Profile:</label>
                         <select name="type"/>
-                          <option value="patient">Patient</option>
-                          <option value="doctor">Doctor</option>
-                          <option value="admin">Administrator</option>
+                          <option value="Patient">Patient</option>
+                          <option value="Doctor">Doctor</option>
+                          <option value="Administrator">Administrator</option>
                         </select>
                     </div>
                     <div>
-                        <input class="btn btn-primary" type="submit" value="Sign Up"/>
+                        <input class="btn btn-primary" type="submit" value="Enroll"/>
                     </div>
                 </form>
             </div>

@@ -26,7 +26,7 @@
 
         <div class="container row">
             <div class="jumbotron col-sm-4 pull-center">
-                <form action="/makepayment" method="post">
+                <form action="routes/payment" method="post">
                     <div>
                         <label>Bill ID:</label>
                         <input type="text" name="bill_id"/>
@@ -38,9 +38,9 @@
                     <div>
                         <label>Payment Method:</label>
                         <select name="pmethod"/>
-                          <option value="credit">Credit/Debit Card</option>
-                          <option value="bank_transfer">Bank Transfer</option>
-                          <option value="venmo">Venmo</option>
+                          <option value="Credit">Credit/Debit Card</option>
+                          <option value="Bank_Transfer">Bank Transfer</option>
+                          <option value="Venmo">Venmo</option>
                         </select>
                     </div>
                     <div>

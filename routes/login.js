@@ -20,7 +20,8 @@ module.exports.login=function(req,res){
                     status:true,
                     message:'successfully authenticated'
                 })*/
-                res.redirect('/dashboard');
+                req.session.user = req.body.username;
+                return res.redirect('/dashboard');
             }else{
                 res.json({
                   status:false,

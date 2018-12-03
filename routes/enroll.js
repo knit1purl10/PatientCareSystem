@@ -15,12 +15,13 @@ module.exports.enroll=function(req,res){
             message:'there are some error with query'
         })
       }else{
-          res.json({
+          /*res.json({
             status:true,
             data:results,
             message:'user registered sucessfully'
-        })
-        res.redirect('/');
+        })*/
+        req.session.user = req.body.username;
+        return res.redirect('/');
       }
     });
 }

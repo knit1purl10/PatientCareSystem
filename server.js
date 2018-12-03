@@ -53,13 +53,9 @@ app.route('/')
     })
 //
 
-app.route('/enroll')
-  .get(sessionChecker, (req, res) => {
-    res.sendFile(__dirname + '/public/enroll.html');
-  })
-/*, function (req, res) {
-   res.sendFile( __dirname + "/public/" + "enroll.html" );
-})*/
+app.get('/enroll', function(req, res) {
+  res.sendFile(__dirname + "/public/" + "enroll.html");
+})
 
 app.get('/dashboard', function(req, res) {
   if (req.session.user && req.cookies.user_sid) {
@@ -88,6 +84,14 @@ app.get('/updateInfo', function(req, res) {
 
 app.get('/schedule', function(req, res) {
   res.sendFile(__dirname + "/public/" + "schedule.html");
+})
+
+app.get('/schedule', function(req, res) {
+  res.sendFile(__dirname + "/public/" + "schedule.html");
+})
+
+app.get('/insurance', function(req, res) {
+  res.sendFile(__dirname + "/public/" + "insurance.html");
 })
 
 /* route to handle login and registration */

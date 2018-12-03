@@ -21,6 +21,8 @@ module.exports.login=function(req,res){
                     message:'successfully authenticated'
                 })*/
                 req.session.user = req.body.username;
+                req.session.userprofile = results[0].user_type;
+                req.session.user_id = results[0].user_id;
                 return res.redirect('/dashboard');
             }else{
                 res.json({

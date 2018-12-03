@@ -4,10 +4,13 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var connection = require('./config');
 var app = express();
+var router = express.Router();
 
 var loginController = require('./routes/enroll');
 var login = require('./routes/login');
 var paymentController = require('./routes/payment');
+var userInfoController = require('./routes/updateInfo');
+var scheduleController = require('./routes/schedule');
 
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({
@@ -71,7 +74,7 @@ app.get('/logout', (req, res) => {
         res.clearCookie('user_sid');
         res.redirect('/');
     } else {
-        res.redirect('/login');
+        res.redirect('/');
     }
 });
 
@@ -79,13 +82,25 @@ app.get('/payment', function(req, res) {
   res.sendFile(__dirname + "/public/" + "payment.html");
 })
 
+app.get('/updateInfo', function(req, res) {
+  res.sendFile(__dirname + "/public/" + "updateInfo.html");
+})
+
+app.get('/schedule', function(req, res) {
+  res.sendFile(__dirname + "/public/" + "schedule.html");
+})
+
 /* route to handle login and registration */
 app.post('/api/enroll', loginController.enroll);
 app.post('/api/login', login.login);
 app.post('/api/payment', paymentController.makepayment);
+app.post('/api/updateInfo', userInfoController.updateInfo);
+app.post('/api/schedule', scheduleController.schedule);
 
-console.log(paymentController);
+//console.log(paymentController);
 app.post('/routes/enroll', loginController.enroll);
 app.post('/routes/login', login.login);
 app.post('/routes/payment', paymentController.makepayment);
+app.post('/routes/updateInfo', userInfoController.updateInfo);
+app.post('/routes/schedule', scheduleController.schedule);
 app.listen(8012);

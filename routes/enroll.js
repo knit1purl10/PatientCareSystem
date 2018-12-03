@@ -20,7 +20,6 @@ module.exports.enroll=function(req,res){
             data:results,
             message:'user registered sucessfully'
         })*/
-        req.session.user = req.body.username;
         return res.redirect('/');
       }
     });

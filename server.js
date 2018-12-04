@@ -105,14 +105,23 @@ app.get("/viewSchedule", function(req, res, next) {
    res.sendFile(__dirname + "/public/" + "viewSchedule.html");
 });
 
-app.get("/inputQuery", function(req, res) {
-   connection.query('SELECT p.first_name as First, p.last_name as Last, v.visit_start_time as Scheduled, v.purpose as Purpose \
+app.get("/patient", function(req, res, next) {
+   res.sendFile(__dirname + "/public/" + "patientRecord.html");
+});
+
+app.get("/getSchedule", function(req, res) {
+  var params = []
+  var query = 'SELECT p.first_name as First, p.last_name as Last, v.visit_start_time as Scheduled, v.purpose as Purpose \
 FROM patient_care_system.Visit as v \
 left join patient_care_system.Patient as p \
-on v.patient_id = p.user_id \
-where v.doctor_id = ? \
-and yearweek(v.visit_start_time, 1) = yearweek(curdate(),1) \
-ORDER BY v.visit_start_time;', [req.session.user_id], function(err, rows, fs) {
+on v.patient_id = p.user_id where ';
+if (req.session.userprofile == 'Doctor') {
+    query += ' v.doctor_id = ? and '
+    params.push(req.session.user_id)
+}
+query += 'yearweek(v.visit_start_time, 1) = yearweek(curdate(),1) \
+ORDER BY v.visit_start_time';
+   connection.query(query, params, function(err, rows, fs) {
       if(err) {
          console.log('Something is broken');
          console.log(err);
@@ -120,6 +129,101 @@ ORDER BY v.visit_start_time;', [req.session.user_id], function(err, rows, fs) {
       }
       res.json(rows);
    });
+});
+
+app.get("/getPatientInfo", function(req, res) {
+  var params = []
+  var query = 'SELECT first_name as "First Name", last_name as "Last Name", \
+  DATE_FORMAT(date_of_birth, "%m/%d/%Y") as "Date of Birth", gender as Gender, \
+  address_line1 as "Address 1", address_line2 as "Address 2", city as City,\
+  state as State, zip_code as "Zip Code", phone_number as "Phone #" \
+FROM patient_care_system.Patient where ';
+if (req.session.userprofile == 'Patient') {
+    query += 'user_id = ?'
+    params.push(req.session.user_id);
+} else {
+  if (req.query.pid != '' && req.query.search_name != '') {
+    query += 'user_id = ? and (lower(first_name) like ? or lower(last_name) like ?)'
+    params.push(req.query.pid);
+    params.push('%'+req.query.search_name+'%');
+    params.push('%'+req.query.search_name+'%');
+  } else{
+    if (req.query.pid != '') {
+      params.push(req.query.pid);
+      query += 'user_id = ?'
+    } else {
+      query += '(first_name like ? or last_name like ?)'
+      params.push('%'+req.query.search_name+'%');
+      params.push('%'+req.query.search_name+'%');
+    }
+  }
+  console.log(req.query.pid);
+  console.log(req.query.search_name);
+}
+   connection.query(query, params, function(err, rows, fs) {
+      if(err) {
+         console.log('Something is broken');
+         console.log(err);
+         console.log(fs);
+      }
+      res.json(rows);
+   });
+});
+
+app.get("/getVisit", function(req, res) {
+  var params = []
+  var query = 'SELECT p.first_name as First, p.last_name as Last, \
+  p.insur_type as Insurance, v.purpose as Purpose, v.note as Notes,\
+  v.visit_id \
+FROM patient_care_system.Visit as v \
+left join patient_care_system.Patient as p \
+on v.patient_id = p.user_id \
+where v.visit_end_time is null \
+and (v.doctor_id = ? or v.doctor_id is null) ';
+if (req.session.userprofile == 'Doctor') {
+    params.push(req.session.user_id);
+    if (req.query.pid != '' && req.query.search_name != '') {
+      query += 'and p.user_id = ? and (lower(p.first_name) like ? or lower(p.last_name) like ?)'
+      params.push(req.query.pid);
+      params.push('%'+req.query.search_name+'%');
+      params.push('%'+req.query.search_name+'%');
+    } else{
+        query += 'and (lower(p.first_name) like ? or lower(p.last_name) like ?)'
+        params.push('%'+req.query.search_name+'%');
+        params.push('%'+req.query.search_name+'%');
+    }
+    query += 'order by v.visit_start_time limit 1;';
+    connection.query(query, params, function(err, rows, fs) {
+       if(err) {
+          console.log('Something is broken');
+          console.log(err);
+          console.log(fs);
+       }
+       res.json(rows);
+    });
+}
+});
+
+app.post("/getTreatments", function(req, res) {
+  var params = []
+  var query = 'SELECT t2.trt_name as "Actions Taken" \
+  from Treatment_Requested as t1 inner join Treatment as t2 \
+on t1.test_id = t2.trt_number \
+left join patient_care_system.Visit as v \
+on t1.visit_id = v.visit_id \
+where v.visit_id = ?;';
+if (req.session.userprofile == 'Doctor') {
+    params.push(req.body.vid);
+    connection.query(query, params, function(err, rows, fs) {
+       if(err) {
+          console.log('Something is broken');
+          console.log(err);
+          console.log(fs);
+       }
+       console.log(rows);
+       return res.json(rows);
+    });
+}
 });
 /* route to handle login and registration */
 app.post('/api/enroll', loginController.enroll);

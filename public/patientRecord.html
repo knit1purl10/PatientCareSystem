@@ -1,0 +1,123 @@
+<html>
+    <head>
+        <title>See Patients</title>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    </head>
+    <body class="container">
+        <div class="page-header">
+            <h1>CS6400 PatientCare System</h1>
+        </div>
+
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/logout">Log Out</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+        <div class="container row">
+            <div class="jumbotron col-sm-3 pull-center">
+                <!-- <form action="/getPatientInfo" method="get"> -->
+                    <div>
+                        Search by Patient ID:
+                        <input type="text" name="pid" id="pid"/>
+                    </div>
+                    <div>
+                        Search by Name:
+                        <input type="text" name="search_name" id="search_name"/>
+                    </div>
+                    <div>
+                        <input class="btn btn-primary" id="run_button" type="submit" value="Search"/>
+                    </div>
+                <!--</form>-->
+            </div>
+            <!--<div id="info_display">
+              <table id="display" border='2' style="margin:auto;padding-left:10px;"></table>
+            </div><br/>-->
+            <div id="visit_display">
+              <table id="visit" border='2' style="margin:auto;padding-left:10px;"></table><br/>
+              <input class="btn btn-primary" id="retrieve_treatments" type="submit" value="Get Treatments" style="margin:auto;display:block;"/>
+            </div><br/>
+            <div id="treatment_display">
+              <table id="treatment" border='2' style="margin:auto;padding-left:10px;"></table>
+            </div>
+            <div id="doctors_notes" style="margin:auto;padding-left:10px;display:block;">
+              <label>Additional Notes:</label>
+            <input type="textarea" name="notes" id="notes"/>
+            <input class="btn btn-primary" id="save_button" type="submit" value="Save"/>
+          </div>
+        </div>
+    </body>
+    <script>
+    $(document).ready(function() {
+      var visit_id = null;
+     jQuery('#info_display').val("");
+     if (!$('#visit').val()) {
+       $('#doctors_notes').hide();
+       $('#retrieve_treatments').hide();
+     } else {
+      $('#doctors_notes').show();
+      $('#retrieve_treatments').show();
+     }
+     $('#run_button').click(function() {
+       $('#treatment').html('');
+       $('#visit').html('');
+        var params = {
+           pid: jQuery('#pid').val(),
+           search_name: jQuery('#search_name').val()
+        };
+        $.getJSON("/getVisit", params, function(result) {
+           $.each(result, function(key, val) {
+              var th = $('<tr></tr>');
+              var tr = $('<tr></tr>');
+              $.each(val, function(k, v) {
+                 if(key == 0) {
+                    $('<th>'+k+'</th>').appendTo(th);
+                 }
+                 $('<td>'+v+'</td>').appendTo(tr);
+              });
+              th.appendTo('#visit');
+              tr.appendTo('#visit');
+           });
+        });
+         $('#doctors_notes').show();
+         $('#retrieve_treatments').show();
+      });
+
+      $('#retrieve_treatments').click(function() {
+        console.log($("#visit:first tr td:last-child").html());
+         var params = {
+            vid: $("#visit:first tr td:last-child").html(),
+         };
+         $.post("/getTreatments", params, function(result) {
+            $.each(result, function(key, val) {
+               var th = $('<tr></tr>');
+               var tr = $('<tr></tr>');
+               $.each(val, function(k, v) {
+                  if(key == 0) {
+                     $('<th>'+k+'</th>').appendTo(th);
+                  }
+                  $('<td>'+v+'</td>').appendTo(tr);
+               });
+               th.appendTo('#treatment');
+               tr.appendTo('#treatment');
+            });
+         });
+          $('#doctors_notes').show();
+          $('#retrieve_treatments').show();
+       });
+
+
+    });
+    </script>
+</html>

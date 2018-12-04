@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <title>View Schedule</title>
+      <title>View Weekly Schedule</title>
    </head>
 
    <body class="container">
@@ -18,7 +18,6 @@
              <!-- Collect the nav links, forms, and other content for toggling -->
              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                  <ul class="nav navbar-nav">
-                     <li><a href="/">Home</a></li>
                      <li><a href="/dashboard">Dashboard</a></li>
                  </ul>
 
@@ -41,7 +40,7 @@ $(document).ready(function() {
     var params = {
        query: jQuery('#input_query_box').val()
     };
-    $.getJSON("/inputQuery", params, function(result) {
+    $.getJSON("/getSchedule", params, function(result) {
        $.each(result, function(key, val) {
           var th = $('<tr></tr>');
           var tr = $('<tr></tr>');

@@ -1,6 +1,7 @@
 <html>
     <head>
         <title>Update Personal Information</title>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     </head>
     <body class="container">
@@ -75,6 +76,31 @@
                     </div>
                 </form>
             </div>
+            <div id="info_display">
+              <table id="display" border='2'></table>
+            </div>
         </div>
     </body>
+    <script>
+    $(document).ready(function() {
+     jQuery('#info_display').val("");
+        var params = {
+           query: jQuery('#input_query_box').val()
+        };
+        $.getJSON("/getPatientInfo", params, function(result) {
+           $.each(result, function(key, val) {
+              var th = $('<tr></tr>');
+              var tr = $('<tr></tr>');
+              $.each(val, function(k, v) {
+                 if(key == 0) {
+                    $('<th>'+k+'</th>').appendTo(th);
+                 }
+                 $('<td>'+v+'</td>').appendTo(tr);
+              });
+              th.appendTo('#display');
+              tr.appendTo('#display');
+           });
+        });
+    });
+    </script>
 </html>

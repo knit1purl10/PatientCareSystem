@@ -8,6 +8,7 @@ module.exports.login=function(req,res){
 
     connection.query('SELECT * FROM User WHERE user_name = ?',[email], function (error, results, fields) {
       if (error) {
+          console.log(error);
           res.json({
             status:false,
             message:'there are some error with query'

@@ -1,0 +1,92 @@
+//CSS Document - from bootstrap.css.
+
+html {
+   font-family : sans-serif;
+   -webkit-text-size-adjust : 100%;
+   -ms-text-size-adjust : 100%;
+   font-size : 62.5%;
+   -webkit-tap-highlight-color : rgba(0, 0, 0, 0);
+}
+
+body {
+   margin : 0;
+   font-family : "Helvetica Neue", Helvetica, Arial, sans-serif, 'Nobile' !important;
+   font-size : 14px;
+   line-height : 1.428571429;
+   color : #333333;
+   background-color : #ffffff;
+}
+
+button {
+   margin : 0;
+   font-family : inherit;
+   font-size : 100%;
+   line-height : normal;
+   text-transform : none;
+   cursor : pointer;
+   -webkit-appearance : button;
+}
+
+table {
+   border-collapse : collapse;
+   border-spacing : 0;
+}
+
+@media print {
+   * {
+      color : #000 !important;
+      text-shadow : none !important;
+      background : transparent !important;
+      box-shadow : none !important;
+   }
+}
+
+* {
+   -webkit-box-sizing : border-box;
+   -moz-box-sizing : border-box;
+   box-sizing : border-box;
+}
+
+.btn {
+   display : inline-block;
+   padding : 6px 12px;
+   margin-bottom : 0;
+   font-size : 14px;
+   font-weight : normal;
+   line-height : 1.428571429;
+   text-align : center;
+   white-space : nowrap;
+   vertical-align : middle;
+   cursor : pointer;
+   background-image : none;
+   border : 1px solid transparent;
+   border-radius : 4px;
+   -webkit-user-select : none;
+   -moz-user-select : none;
+   -ms-user-select : none;
+   -o-user-select : none;
+   user-select : none;
+}
+
+.btn[disabled] {
+   pointer-events : none;
+   cursor : not-allowed;
+}
+
+.btn-primary {
+   color : #ffffff;
+   background-color : #428bca;
+   border-color : #357ebd;
+}
+
+.btn-primary[disabled] {
+   background-color : #428bca;
+   border-color : #357ebd;
+}
+
+.btn-lg {
+   padding : 10px 16px;
+   font-size : 18px;
+   line-height : 1.33;
+   border-radius : 6px;
+}

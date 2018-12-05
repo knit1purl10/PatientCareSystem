@@ -123,16 +123,17 @@ app.get("/reports", function(req, res, next) {
 
 app.get("/getSchedule", function(req, res) {
   var params = []
-  var query = 'SELECT p.first_name as First, p.last_name as Last, v.visit_start_time as Scheduled, v.purpose as Purpose \
+  var query = 'SELECT p.first_name as First, p.last_name as Last, v.visit_start_time as Scheduled, \
+  v.visit_type as Type, v.purpose as Purpose \
 FROM patient_care_system.Visit as v \
 left join patient_care_system.Patient as p \
-on v.patient_id = p.user_id where ';
+on v.patient_id = p.user_id  ';
   if (req.session.userprofile == 'Doctor') {
-    query += ' v.doctor_id = ? and '
+    query += 'where v.doctor_id = ? and '
     params.push(req.session.user_id)
   }
-  query += 'yearweek(v.visit_start_time, 1) = yearweek(curdate(),1) \
-ORDER BY v.visit_start_time';
+  //query += 'yearweek(v.visit_start_time, 1) = yearweek(curdate(),1) \
+query += 'ORDER BY v.visit_start_time';
   connection.query(query, params, function(err, rows, fs) {
     if (err) {
       console.log('Something is broken');
@@ -150,6 +151,7 @@ app.get("/getPatientInfo", function(req, res) {
   address_line1 as "Address 1", address_line2 as "Address 2", city as City,\
   state as State, zip_code as "Zip Code", phone_number as "Phone #" \
 FROM patient_care_system.Patient where ';
+console.log(req.session.userprofile);
   if (req.session.userprofile == 'Patient') {
     query += 'user_id = ?'
     params.push(req.session.user_id);
@@ -192,7 +194,7 @@ left join patient_care_system.Patient as p \
 on v.patient_id = p.user_id \
 where  ';
   if (req.session.userprofile == 'Doctor') {
-    query += 'and (v.doctor_id = ? or v.doctor_id is null) '
+    query += '(v.doctor_id = ? or v.doctor_id is null) and '
     params.push(req.session.user_id);
   }
   if (req.query.pid != '' && req.query.search_name != '') {
@@ -238,11 +240,8 @@ where v.visit_id = ?;';
 
 app.post("/closeVisit", function(req, res) {
   var params = []
-  var query = 'update v set note = ?, visit_end_time = now(), visit_cost = t.total_bill \
-  from Visit as v inner join (select visit_id, sum(trt_cost) as total_bill \
-  from Treatment_Requested as t1 inner join Treatment as t2 \
-  on t1.test_id = t2.trt_number) t on t.visit_id = v.visit_id\
-              where visit_id = ?;';
+  var query = 'update Visit set note = ?, visit_end_time = now() \
+  where visit_id = ?;';
   if (req.session.userprofile == 'Doctor') {
     console.log(req.body.notes);
     console.log(req.body.vid);

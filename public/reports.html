@@ -33,8 +33,9 @@
         <select name="report_name" id="report_name" />
         <option value="office-revenue">Office Revenue</option>
         <option value="doctor-patient">Revenue by Doctor</option>
-        <option value="doctor-treatment">Treatments by Doctor</option>
+        <option value="treatment">Treatments Statistics</option>
         <option value="insurance">Insurance Breakdown</option>
+        <option value="user">User Report</option>
         </select>
       </div>
       <div id="doctor_selector">
@@ -93,6 +94,7 @@
     });
 
     $('#run_button').click(function() {
+      console.log(jQuery('#report_name').val());
       $('#display').html('');
       var params = {
         report_name: jQuery('#report_name').val(),
@@ -100,8 +102,9 @@
         start: jQuery('#start').val(),
         end: jQuery('#end').val()
       };
-      
-      $.getJSON("/getVisit", params, function(result) {
+
+      $.getJSON("/getReport", params, function(result) {
+        $('#report').html('');
         $.each(result, function(key, val) {
           var th = $('<tr></tr>');
           var tr = $('<tr></tr>');
@@ -110,17 +113,11 @@
               $('<th>' + k + '</th>').appendTo(th);
             }
             $('<td>' + v + '</td>').appendTo(tr);
-            if (k == 'notes') {
-              jQuery('textarea').val(v);
-            }
           });
-          th.appendTo('#visit');
-          tr.appendTo('#visit');
+          th.appendTo('#report');
+          tr.appendTo('#report');
         });
       });
-
-      $('#doctors_notes').show();
-      $('#retrieve_treatments').show();
     });
 
   });

@@ -33,7 +33,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    expires: 600000000000
+    expires: 60000000000000000000000
   }
 }));
 
@@ -323,8 +323,80 @@ app.get("/getActiveDoctors", function(req, res) {
 
 app.get("/getReport", function(req, res) {
   var params = []
-  var query = 'select user_id, last_name from patient_care_system.Doctor \
-  WHERE work_end_date is null;';
+  var query = ""
+  console.log(req.query.report_name)
+  if (req.query.report_name == "treatment") {
+    query = "select trt_name as \"Treatment Name\", count(t1.visit_id) as \"Times Ordered\", sum(trt_cost) as \"Total Cost\" \
+    from Visit as v \
+inner join Treatment_Requested as t1 on v.visit_id = t1.visit_id \
+inner join Treatment as t2 on t1.test_id = t2.trt_number "
+    if (req.query.start != "" || req.query.end != "") {
+      query += "where "
+      if (req.query.start != "") {
+        query += "v.visit_end_time < ? ";
+        params.push(req.query.start);
+      } if (req.query.start != "" && req.query.end != "") {
+        query += "and v.visit_end_time > ? "
+        params.push(req.query.end)
+      } else {
+        query += "v.visit_end_time > ? "
+        params.push(req.query.end)
+      }
+    }
+    query += "group by trt_name;"
+  }
+
+  if (req.query.report_name == "doctor-patient") {
+    query = "select v.visit_id as \"Visit Record #\", count(trt_number) as \"Treatments Requested\", \
+    sum(visit_cost) as \"Total Cost\" from Doctor as d \
+left join Visit as v \
+on v.doctor_id = d.user_id \
+inner join Treatment_Requested as t1 on v.visit_id = t1.visit_id \
+inner join Treatment as t2 on t1.test_id = t2.trt_number \
+where doctor_id = ? "
+params.push(req.query.doctor);
+    if (req.query.start != "" || req.query.end != "") {
+      query += "where "
+      if (req.query.start != "") {
+        query += "v.visit_end_time < ? ";
+        params.push(req.query.start);
+      } if (req.query.start != "" && req.query.end != "") {
+        query += "and v.visit_end_time > ? "
+        params.push(req.query.end)
+      } else {
+        query += "v.visit_end_time > ? "
+        params.push(req.query.end)
+      }
+    }
+    query += "group by doctor_id, v.visit_id;"
+  }
+
+  if (req.query.report_name == "office-revenue") {
+    query = "select d.last_name as Doctor, sum(visit_cost) as \"Treatment Profit\" from Doctor as d \
+left join Visit as v \
+on v.doctor_id = d.user_id "
+params.push(req.query.doctor);
+    if (req.query.start != "" || req.query.end != "") {
+      query += "where "
+      if (req.query.start != "") {
+        query += "v.visit_end_time < ? ";
+        params.push(req.query.start);
+      } if (req.query.start != "" && req.query.end != "") {
+        query += "and v.visit_end_time > ? "
+        params.push(req.query.end)
+      } else {
+        query += "v.visit_end_time > ? "
+        params.push(req.query.end)
+      }
+    }
+    query += "group by doctor_id;"
+  }
+
+  if (req.query.report_name == "user") {
+    query = "select user_type as Profile, count(user_id) as Count from User \
+group by user_type;"
+  }
+
   connection.query(query, params, function(err, rows, fs) {
     if (err) {
       console.log('Something is broken');

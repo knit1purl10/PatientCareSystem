@@ -20,10 +20,10 @@ module.exports.schedule = function(req, res) {
   var notes = req.body.notes;
   var purpose = req.body.purpose;
 
-  connection.query('INSERT INTO Visit (patient_id, doctor_id, visit_start_time, visit_type, note, purpose) \
-    SELECT * FROM (SELECT ?,?,?,?,?,?) as tmp WHERE NOT EXISTS (select patient_id, doctor_id, visit_start_time \
+  connection.query('INSERT INTO Visit (patient_id, doctor_id, visit_start_time, visit_type, purpose) \
+    SELECT * FROM (SELECT ?,?,?,?,?) as tmp WHERE NOT EXISTS (select patient_id, doctor_id, visit_start_time \
       from Visit where (patient_id =? and date(visit_start_time) = date(?)) \
-      or (doctor_id = ? and visit_start_time != ?)) LIMIT 1', [patientid, date, appointment_type, notes, purpose, patientid, date,doctor_id,date], function(error, results, fields) {
+      or (doctor_id = ? and visit_start_time != ?)) LIMIT 1', [patientid, date, appointment_type, purpose, patientid, date,doctor_id,date], function(error, results, fields) {
     if (error) {
       console.log(error);
       res.json({

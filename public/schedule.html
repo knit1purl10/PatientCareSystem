@@ -2,6 +2,7 @@
 
 <head>
   <title>Schedule an Appointment</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 
@@ -32,26 +33,21 @@
           <label>Patient ID:</label>
           <input type="text" name="patient" />
         </div>
-        <div>
+        <div id="appointment_selector">
           <label>Appointment Type:</label>
-          <select name="appointment_type" />
+          <select name="appointment_type" id="appointment_type"/>
           <option value="Walk-In">Walk In</option>
           <option value="Scheduled">Scheduled</option>
           </select>
         </div>
-        <div id="scheduled_doctor" onchange="doctorLoad(this)">
+        <div id="scheduled_doctor">
           <label>Doctor:</label>
-          <select name="doctor" />
-          <option value="2">Jeong</option>
+          <select name="doctor" id="doctor"/>
           </select>
         </div>
         <div>
           <label>Date/Time:</label>
           <input type="datetime-local" name="date" />
-        </div>
-        <div>
-          <label>Notes:</label>
-          <input type="text" name="notes" />
         </div>
         <div>
           <label>Purpose:</label>
@@ -64,5 +60,37 @@
     </div>
   </div>
 </body>
+<script>
+$(document).ready(function() {
+  $('#scheduled_doctor').hide();
 
+  var params = {};
+  $.getJSON("/getActiveDoctors", params, function(result) {
+    $.each(result, function(key, val) {
+      var select_option = "";
+      $.each(val, function(k, v) {
+        if (k != 0) {
+          if (k == "user_id") {
+            select_option = "<option value=\""+v+"\">"
+          } else {
+            select_option += v +"</option>"
+          }
+        }
+        //$('<td>' + v + '</td>').appendTo(tr);
+      });
+      console.log(select_option);
+      $('#doctor').append(select_option);
+    });
+  });
+  console.log($('#appointment_type').val());
+  $('#appointment_type').change(function() {
+    if ($('#appointment_type').val() == "Scheduled") {
+      $('#scheduled_doctor').show();
+    } else {
+      $('#scheduled_doctor').hide();
+    }
+  });
+
+    });
+</script>
 </html>

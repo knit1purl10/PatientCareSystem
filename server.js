@@ -117,6 +117,10 @@ app.get("/paymentHistory", function(req, res, next) {
   res.sendFile(__dirname + "/public/" + "paymentHistory.html");
 });
 
+app.get("/reports", function(req, res, next) {
+  res.sendFile(__dirname + "/public/" + "reports.html");
+});
+
 app.get("/getSchedule", function(req, res) {
   var params = []
   var query = 'SELECT p.first_name as First, p.last_name as Last, v.visit_start_time as Scheduled, v.purpose as Purpose \
@@ -283,14 +287,14 @@ where user_id = ? ORDER BY visit_start_time desc LIMIT 50';
 
 app.get("/getHistory", function(req, res) {
   var params = []
-  var query = 'select visit_id, doctor_id, \
-  date_format(visit_start_time, "%m/%d/%Y"), \
-  visit_cost \
+  var query = 'select visit_id as "Bill ID", Doctor.last_name as Doctor, \
+  date_format(visit_start_time, "%m/%d/%Y") as Date, \
+  visit_cost as "Total Bill" \
   from Visit \
   inner join Doctor \
   on Doctor.user_id = Visit.doctor_id \
-  where patient_id = ?\
-  and visit_end_time is not null; ORDER BY visit_start_time desc LIMIT 50';
+  where patient_id = ? \
+  ORDER BY visit_start_time desc LIMIT 50';
   console.log(req.session.user_id);
   params.push(req.session.user_id);
   connection.query(query, params, function(err, rows, fs) {
@@ -302,6 +306,35 @@ app.get("/getHistory", function(req, res) {
     res.json(rows);
   });
 });
+
+app.get("/getActiveDoctors", function(req, res) {
+  var params = []
+  var query = 'select user_id, last_name from patient_care_system.Doctor \
+  WHERE work_end_date is null;';
+  connection.query(query, params, function(err, rows, fs) {
+    if (err) {
+      console.log('Something is broken');
+      console.log(err);
+      console.log(fs);
+    }
+    res.json(rows);
+  });
+});
+
+app.get("/getReport", function(req, res) {
+  var params = []
+  var query = 'select user_id, last_name from patient_care_system.Doctor \
+  WHERE work_end_date is null;';
+  connection.query(query, params, function(err, rows, fs) {
+    if (err) {
+      console.log('Something is broken');
+      console.log(err);
+      console.log(fs);
+    }
+    res.json(rows);
+  });
+});
+
 /* route to handle login and registration */
 app.post('/api/enroll', loginController.enroll);
 app.post('/api/login', login.login);

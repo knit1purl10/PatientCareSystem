@@ -1,0 +1,129 @@
+<html>
+
+<head>
+  <title>Revenue Report</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body class="container">
+  <div class="page-header">
+    <h1>CS6400 PatientCare System</h1>
+  </div>
+
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a href="/dashboard">Dashboard</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/logout">Log Out</a></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <div class="container row">
+    <div class="jumbotron col-sm-3 pull-center">
+      <div id="report_selector">
+        <label>Report:</label>
+        <select name="report_name" id="report_name" />
+        <option value="office-revenue">Office Revenue</option>
+        <option value="doctor-patient">Revenue by Doctor</option>
+        <option value="doctor-treatment">Treatments by Doctor</option>
+        <option value="insurance">Insurance Breakdown</option>
+        </select>
+      </div>
+      <div id="doctor_selector">
+        <label>Doctor:</label>
+        <select name="doctor_name" id="doctor_name" />
+        </select>
+      </div>
+      <div>
+        <label>Start Date:</label>
+        <input type="date" name="start" id="start" />
+      </div>
+      <div>
+        <label>End Date:</label>
+        <input type="date" name="end" id="end" />
+      </div>
+      <div>
+        <input class="btn btn-primary" id="run_button" type="submit" value="Generate" />
+      </div>
+    </div>
+    <div id="report_display">
+      <table id="report" border='2' style="margin:auto;padding-left:10px;"></table><br />
+    </div>
+
+  </div>
+</body>
+<script>
+  $(document).ready(function() {
+    $('#doctor_selector').hide();
+    console.log($('#report_name').val());
+
+    var params = {};
+    $.getJSON("/getActiveDoctors", params, function(result) {
+      $.each(result, function(key, val) {
+        var select_option = "";
+        $.each(val, function(k, v) {
+          if (k != 0) {
+            if (k == "user_id") {
+              select_option = "<option value=\"" + v + "\">"
+            } else {
+              select_option += v + "</option>"
+            }
+          }
+          //$('<td>' + v + '</td>').appendTo(tr);
+        });
+        console.log(select_option);
+        $('#doctor_name').append(select_option);
+      });
+    });
+
+    $('#report_name').change(function() {
+      if ($('#report_name').val() == "doctor-patient") {
+        $('#doctor_selector').show();
+      } else {
+        $('#doctor_selector').hide();
+      }
+    });
+
+    $('#run_button').click(function() {
+      $('#display').html('');
+      var params = {
+        report_name: jQuery('#report_name').val(),
+        doctor: jQuery('#doctor_name').val(),
+        start: jQuery('#start').val(),
+        end: jQuery('#end').val()
+      };
+      
+      $.getJSON("/getVisit", params, function(result) {
+        $.each(result, function(key, val) {
+          var th = $('<tr></tr>');
+          var tr = $('<tr></tr>');
+          $.each(val, function(k, v) {
+            if (key == 0) {
+              $('<th>' + k + '</th>').appendTo(th);
+            }
+            $('<td>' + v + '</td>').appendTo(tr);
+            if (k == 'notes') {
+              jQuery('textarea').val(v);
+            }
+          });
+          th.appendTo('#visit');
+          tr.appendTo('#visit');
+        });
+      });
+
+      $('#doctors_notes').show();
+      $('#retrieve_treatments').show();
+    });
+
+  });
+</script>
+
+</html>

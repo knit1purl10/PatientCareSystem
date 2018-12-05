@@ -129,7 +129,7 @@ FROM patient_care_system.Visit as v \
 left join patient_care_system.Patient as p \
 on v.patient_id = p.user_id  ';
   if (req.session.userprofile == 'Doctor') {
-    query += 'where v.doctor_id = ? and '
+    query += 'where v.doctor_id = ? '
     params.push(req.session.user_id)
   }
   //query += 'yearweek(v.visit_start_time, 1) = yearweek(curdate(),1) \
@@ -192,21 +192,21 @@ app.get("/getVisit", function(req, res) {
 FROM patient_care_system.Visit as v \
 left join patient_care_system.Patient as p \
 on v.patient_id = p.user_id \
-where  ';
+where  v.visit_end_time is null ';
   if (req.session.userprofile == 'Doctor') {
-    query += '(v.doctor_id = ? or v.doctor_id is null) and '
+    query += 'and (v.doctor_id = ? or v.doctor_id is null) '
     params.push(req.session.user_id);
   }
   if (req.query.pid != '' && req.query.search_name != '') {
-    query += ' p.user_id = ? and (lower(p.first_name) like ? or lower(p.last_name) like ?)'
+    query += 'and p.user_id = ? and (lower(p.first_name) like ? or lower(p.last_name) like ?)'
     params.push(req.query.pid);
     params.push('%' + req.query.search_name + '%');
     params.push('%' + req.query.search_name + '%');
-  } else {
+  } /*else {
     query += ' (lower(p.first_name) like ? or lower(p.last_name) like ?) '
     params.push('%' + req.query.search_name + '%');
     params.push('%' + req.query.search_name + '%');
-  }
+  }*/
   query += 'order by v.visit_start_time limit 1;';
   connection.query(query, params, function(err, rows, fs) {
     if (err) {

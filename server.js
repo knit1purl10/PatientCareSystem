@@ -202,11 +202,11 @@ where  v.visit_end_time is null ';
     params.push(req.query.pid);
     params.push('%' + req.query.search_name + '%');
     params.push('%' + req.query.search_name + '%');
-  } /*else {
-    query += ' (lower(p.first_name) like ? or lower(p.last_name) like ?) '
+  } else {
+    query += ' and (lower(p.first_name) like ? or lower(p.last_name) like ?) '
     params.push('%' + req.query.search_name + '%');
     params.push('%' + req.query.search_name + '%');
-  }*/
+  }
   query += 'order by v.visit_start_time limit 1;';
   connection.query(query, params, function(err, rows, fs) {
     if (err) {

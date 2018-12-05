@@ -133,7 +133,7 @@ on v.patient_id = p.user_id  ';
     params.push(req.session.user_id)
   }
   //query += 'yearweek(v.visit_start_time, 1) = yearweek(curdate(),1) \
-query += 'ORDER BY v.visit_start_time';
+query += 'ORDER BY v.visit_start_time, v.visit_id';
   connection.query(query, params, function(err, rows, fs) {
     if (err) {
       console.log('Something is broken');

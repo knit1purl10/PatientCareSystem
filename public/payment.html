@@ -1,53 +1,86 @@
 <html>
-    <head>
-        <title>Make a Payment</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    </head>
-    <body class="container">
-        <div class="page-header">
-            <h1>CS6400 PatientCare System</h1>
+
+<head>
+  <title>Make a Payment</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body class="container">
+  <div class="page-header">
+    <h1>CS6400 PatientCare System</h1>
+  </div>
+
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a href="/">Home</a></li>
+          <li><a href="/dashboard">Dashboard</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/logout">Log Out</a></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <div class="container row">
+    <div class="jumbotron col-sm-4 pull-center">
+      <form action="/routes/payment" method="post">
+        <div>
+          <label>Bill ID:</label>
+          <input type="text" name="bill_id" />
         </div>
-
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/dashboard">Dashboard</a></li>
-                    </ul>
-
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="/logout">Log Out</a></li>
-                    </ul>
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
-        </nav>
-
-        <div class="container row">
-            <div class="jumbotron col-sm-4 pull-center">
-                <form action="/routes/payment" method="post">
-                    <div>
-                        <label>Bill ID:</label>
-                        <input type="text" name="bill_id"/>
-                    </div>
-                    <div>
-                        <label>Amount:</label>
-                        <input type="text" name="amount"/>
-                    </div>
-                    <div>
-                        <label>Payment Method:</label>
-                        <select name="pmethod"/>
-                          <option value="credit">Credit/Debit Card</option>
-                          <option value="bank_transfer">Bank Transfer</option>
-                          <option value="venmo">Venmo</option>
-                        </select>
-                    </div>
-                    <div>
-                        <input class="btn btn-primary" type="submit" value="Submit Payment"/>
-                    </div>
-                </form>
-            </div>
+        <div>
+          <label>Amount:</label>
+          <input type="text" name="amount" />
         </div>
-    </body>
+        <div>
+          <label>Payment Method:</label>
+          <select name="pmethod" />
+          <option value="credit">Credit/Debit Card</option>
+          <option value="bank_transfer">Bank Transfer</option>
+          <option value="venmo">Venmo</option>
+          </select>
+        </div>
+        <div>
+          <input class="btn btn-primary" type="submit" value="Submit Payment" />
+        </div>
+      </form>
+    </div>
+    <div class="jumbotron col-sm-6 pull-center">
+      <h3>Payment History</h3>
+      <div id="wrapper">
+        <table border='2' id="display"></table>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  //Script to print table.
+
+  $(document).ready(function() {
+    jQuery('#wrapper').val("");
+    var params = {
+    };
+    $.getJSON("/getPaymentHistory", params, function(result) {
+      $.each(result, function(key, val) {
+        var th = $('<tr></tr>');
+        var tr = $('<tr></tr>');
+        $.each(val, function(k, v) {
+          if (key == 0) {
+            $('<th>' + k + '</th>').appendTo(th);
+          }
+          $('<td>' + v + '</td>').appendTo(tr);
+        });
+        th.appendTo('#display');
+        tr.appendTo('#display');
+      });
+    });
+  });
+</script>
+
 </html>

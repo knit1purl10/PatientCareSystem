@@ -1,0 +1,59 @@
+
+<!--Main HTML document.-->
+
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>View Visit History</title>
+   </head>
+
+   <body class="container">
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+     <div class="page-header">
+         <h1>CS6400 PatientCare System</h1>
+     </div>
+     <nav class="navbar navbar-default">
+         <div class="container-fluid">
+             <!-- Collect the nav links, forms, and other content for toggling -->
+             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                 <ul class="nav navbar-nav">
+                     <li><a href="/dashboard">Dashboard</a></li>
+                 </ul>
+
+                 <ul class="nav navbar-nav navbar-right">
+                     <li><a href="/logout">Log Out</a></li>
+                 </ul>
+             </div><!-- /.navbar-collapse -->
+         </div><!-- /.container-fluid -->
+     </nav>
+      <br>
+      <div id="wrapper">
+         <table border='3' id="display" style="text-align: center; width: 1100px;"></table>
+      </div>
+   </body>
+   <script>
+   //Script to print table.
+
+$(document).ready(function() {
+ jQuery('#wrapper').val("");
+    var params = {
+       query: jQuery('#input_query_box').val()
+    };
+    $.getJSON("/getHistory", params, function(result) {
+       $.each(result, function(key, val) {
+          var th = $('<tr></tr>');
+          var tr = $('<tr></tr>');
+          $.each(val, function(k, v) {
+             if(key == 0) {
+                $('<th>'+k+'</th>').appendTo(th);
+             }
+             $('<td>'+v+'</td>').appendTo(tr);
+          });
+          th.appendTo('#display');
+          tr.appendTo('#display');
+       });
+    });
+});
+</script>
+</html>
